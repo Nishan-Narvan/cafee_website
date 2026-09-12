@@ -20,9 +20,11 @@ const media = {
 const locationUrl = 'https://l.instagram.com/?u=https%3A%2F%2Fmaps.app.goo.gl%2FR2wbMWMEQzP4GgTQ6%3Fg_st%3Dic%26utm_source%3Dig%26utm_medium%3Dsocial%26utm_content%3Dlink_in_bio%26fbclid%3DPAcGRvZgJleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA85MzY2MTk3NDMzOTI0NTkAAafK-d8FswoVE-mb2cFdLEnfXHw8bCHeoz2_jlnuxwD1yaWb3ZwW3WRkXfDqMw_aem_yuxLHAHSv6-sN5uzkWs0uw&e=AUAvWlLf7M0muz5r5NzPHulXRDhfwhKU0L_7pSpqf_w9Vd6aMB3CndAHezB3CcMPClgt5ENyXtx_QYDTpZYooR77BkjUIbhFS3mroRj8IsxLLR6iVa_xYz8FKTBuDM0TgXwb4m8'
 
 const menuItems = [
-  { number: '01', name: 'Mont Blanc', detail: 'Not your usual coffee.', media: media.montBlanc, type: 'video' },
-  { number: '02', name: 'Iced Mocha Latte', detail: 'One sip, and you’ll know why.', media: media.icedMocha, type: 'video' },
-  { number: '03', name: 'Good sips. Good food.', detail: 'Immaculate vibes.', media: media.peopleVibing, type: 'video' },
+  { name: 'Mont Blanc', detail: 'A signature coffee with a little theatre.' },
+  { name: 'Iced Latte', detail: 'Cold, smooth, and made for slow afternoons.' },
+  { name: 'Cortado', detail: 'Short, balanced, and quietly intense.' },
+  { name: 'House Toast', detail: 'Golden sourdough, seasonal toppings.' },
+  { name: 'Something Sweet', detail: 'A small finish for a very good day.' },
 ]
 
 function Media({ src, alt, type = 'image', className = '' }: { src: string; alt: string; type?: string; className?: string }) {
@@ -68,14 +70,14 @@ function App() {
 
       <section className="feature" id="menu">
         <div className="feature-media"><Media src={media.montBlanc} alt="Mont Blanc coffee at The Brew Door" type="video" /></div>
-        <div className="feature-copy"><p className="eyebrow">Not your usual coffee</p><h2>Mont<br /><em>Blanc.</em></h2><p>A signature sip from the door, made to be remembered.</p><a className="text-link coffee-link" href="#crew">Meet the crew</a></div>
+        <div className="feature-copy"><p className="eyebrow">Our best</p><h2>Mont<br /><em>Blanc.</em></h2><p>A signature sip from the door, made to be remembered.</p><a className="text-link coffee-link" href="#crew">Meet the crew</a></div>
       </section>
 
       <section className="process-section">
         <motion.div className="process-intro" {...reveal}><p className="eyebrow">Behind every good cup</p><h2>Made<br /><em>slowly.</em></h2><p>From the first pour to the final sip.</p></motion.div>
         <div className="process-grid">
-          <motion.figure className="process-card process-card-large" {...reveal}><Media src={media.processSlow} alt="The Brew Door coffee-making process" type="video" /><figcaption>Process</figcaption></motion.figure>
-          <motion.figure className="process-card process-card-small" {...reveal} transition={{ ...reveal.transition, delay: .12 }}><Media src={media.processPour} alt="Iced latte being prepared at The Brew Door" type="video" /><figcaption>Iced latte</figcaption></motion.figure>
+          <motion.figure className="process-card process-card-large" {...reveal}><Media src={media.processSlow} alt="The Brew Door coffee-making process" type="video" /></motion.figure>
+          <motion.figure className="process-card process-card-small" {...reveal} transition={{ ...reveal.transition, delay: .12 }}><Media src={media.processPour} alt="Iced latte being prepared at The Brew Door" type="video" /></motion.figure>
         </div>
       </section>
 
@@ -84,7 +86,7 @@ function App() {
         <div className="menu-list">
           {menuItems.map((item, index) => (
             <motion.article className="menu-row" key={item.name} {...reveal} transition={{ ...reveal.transition, delay: index * 0.1 }}>
-            <div className="menu-thumb"><Media src={item.media} alt={item.name} type={item.type} /></div><div className="menu-name"><h3>{item.name}</h3><p>{item.detail}</p></div>
+            <div className="menu-name"><h3>{item.name}</h3><p>{item.detail}</p></div>
             </motion.article>
           ))}
         </div>
@@ -92,7 +94,6 @@ function App() {
 
       <section className="crew section-rule" id="crew">
         <div className="crew-heading"><p className="eyebrow">Introducing</p><h2>The crew’s<br /><em>energy.</em></h2><p>Zero chill about coffee,<br />endless chill about everything else.</p></div>
-        <motion.a className="crew-intro coffee-link" href="#crew-cards" {...reveal}><img src={media.crewIntro} alt="Meet the crew — Wolf, Bear and Tiger" /><div>Meet the crew</div></motion.a>
         <div className="crew-gallery" id="crew-cards">
           <article className="crew-card"><div className="crew-card-inner"><div className="crew-face"><Media src={media.wolf} alt="The Wolf crew illustration" /></div><div className="crew-person"><Media src={media.wolfPerson} alt="The Wolf crew member" /></div></div><h3>Wolf</h3></article>
           <article className="crew-card"><div className="crew-card-inner"><div className="crew-face"><Media src={media.bear} alt="The Bear crew illustration" /></div><div className="crew-person"><Media src={media.bearPerson} alt="The Bear crew member" /></div></div><h3>Bear</h3></article>
@@ -107,10 +108,10 @@ function App() {
 
       <section className="visit" id="visit">
         <div className="visit-copy"><p className="eyebrow">Find the door</p><h2>See you<br /><em>there.</em></h2><p>Good coffee is better in person.</p><a className="button button-light coffee-link" href={locationUrl} target="_blank" rel="noreferrer">Open maps</a></div>
-        <a className="map" href={locationUrl} target="_blank" rel="noreferrer" aria-label="Open The Brew Door location in Google Maps"><iframe title="The Brew Door location map" src="https://www.google.com/maps?q=The%20Brew%20Door&output=embed" loading="lazy" /><div className="map-shield">Open maps</div></a>
+        <a className="map" href={locationUrl} target="_blank" rel="noreferrer" aria-label="Open The Brew Door location in Google Maps"><iframe title="The Brew Door location map" src="https://www.google.com/maps?q=The%20Brew%20Door&output=embed" loading="lazy" /><div className="map-shield"><img src={media.logo} alt="" /><span>Open maps</span></div></a>
       </section>
 
-      <footer><a className="brand-logo" href="#top"><img src={media.logo} alt="The Brew Door" /></a><p>Great coffee.<br />Immaculate vibes.</p><div><a href="#menu">Menu</a><a href="#visit">Visit</a></div><small>© The Brew Door</small></footer>
+      <footer><a className="brand-logo" href="#top"><img src={media.logo} alt="The Brew Door" /></a><div className="footer-links"><a href="#menu">Menu</a><a href="#crew">Crew</a><a href="#visit">Map</a></div><div className="footer-contact"><a href="https://www.instagram.com/" target="_blank" rel="noreferrer">Instagram</a><a href={locationUrl} target="_blank" rel="noreferrer">Find the door</a></div><small>© The Brew Door</small></footer>
     </main>
   )
 }
