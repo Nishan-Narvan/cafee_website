@@ -19,11 +19,12 @@
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
 
 /* Final art-direction pass: fewer labels, stronger media, and one consistent interaction. */
-.brand-logo { width: 108px; height: 54px; }
-.brand-logo img { object-fit: contain; }
+.brand-logo { width: 58px; height: 58px; border-radius: 50%; }
+.brand-logo img { object-fit: cover; border-radius: 50%; }
 .hero-title .eyebrow { letter-spacing: .12em; }
 .hero-bottom { left: auto; right: 4.5vw; }
-.hero-bottom .round-link { width: auto; height: auto; border: 0; border-bottom: 1px solid var(--cream); border-radius: 0; padding: 0 0 8px; font: 10px 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .1em; }
+.nav-cta { font: 500 16px 'Playfair Display', serif; text-transform: none; letter-spacing: 0; padding: 8px 15px; border: 1px solid var(--cream); }
+.hero-bottom .round-link { width: auto; height: auto; border: 1px solid var(--cream); border-radius: 0; padding: 12px 16px; font: 10px 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .1em; }
 .hero-bottom .round-link::after { content: ' ↓'; font-size: 15px; }
 .feature { grid-template-columns: 1fr 1fr; gap: 7vw; padding: 9vw 11vw; min-height: 650px; }
 .feature-media { height: 540px; }
@@ -37,6 +38,8 @@
 .menu-section { display: grid; grid-template-columns: .65fr 1.35fr; gap: 8vw; padding: 10vw 11vw; }
 .section-heading { align-self: start; display: block; margin: 0; position: sticky; top: 120px; }
 .section-heading h2 { margin-top: 16px; }
+.menu-vibe { margin-top: 42px; width: min(100%, 230px); aspect-ratio: 1; overflow: hidden; }
+.menu-vibe video { width: 100%; height: 100%; object-fit: cover; filter: saturate(.78); }
 .menu-row { grid-template-columns: 1fr; grid-template-areas: 'name'; min-height: 125px; gap: 20px; position: relative; }
 .menu-row::before { content: counter(menu-item, decimal-leading-zero); counter-increment: menu-item; position: absolute; left: 0; top: 16px; color: var(--green); font: 10px 'DM Mono', monospace; }
 .menu-list { counter-reset: menu-item; }
@@ -48,15 +51,21 @@
 .crew-intro div { position: absolute; right: 15px; bottom: 14px; padding: 11px 14px; background: var(--cream); color: var(--green); font: 10px 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .08em; }
 .crew-card h3 { font-size: 25px; }
 .people-video p { position: absolute; left: 20px; bottom: 5px; color: var(--cream); font: 10px 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .1em; }
-.visit { grid-template-columns: .9fr 1.1fr; min-height: 420px; }
+.visit { grid-template-columns: .9fr 1.1fr; min-height: 540px; }
 .visit-copy { padding: 8vw 9vw; }
-.map { min-height: 420px; }
+.map { min-height: 0; aspect-ratio: 1; width: min(100% - 10vw, 520px); margin: 5vw; align-self: center; justify-self: center; }
 .map-shield { background: transparent; align-content: center; justify-content: center; padding: 18px; display: grid; gap: 12px; text-align: center; }
 .map-shield img { width: 82px; height: 62px; object-fit: contain; margin: 0 auto; }
 .map-shield span { border: 1px solid var(--cream); padding: 10px 13px; font: 9px 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .08em; }
-footer { grid-template-columns: 1fr auto auto auto; padding: 24px 5vw; gap: 5vw; }
-footer .footer-links, footer .footer-contact { display: flex; gap: 18px; font: 9px 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .08em; }
-footer .brand-logo { width: 100px; height: 48px; }
+footer { grid-template-columns: auto repeat(3, 1fr) auto; padding: 34px 5vw; gap: 4vw; align-items: start; }
+footer .footer-column { display: flex; flex-direction: column; gap: 9px; }
+footer .footer-column h4 { margin: 0 0 8px; color: var(--cream); font: 10px 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .12em; }
+footer .footer-column a { color: var(--muted); font: 10px 'DM Mono', monospace; }
+.loading-button { position: relative; overflow: hidden; background: transparent; color: var(--green); border: 1px solid var(--green); padding: 15px 18px 19px; }
+.loading-button::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--green); transform: scaleX(.18); transform-origin: left; transition: transform .25s var(--ease-out); }
+.loading-button:hover::after, .loading-button:focus-visible::after { transform: scaleX(1); }
+.loading-button:hover, .loading-button:focus-visible { color: var(--green); background: transparent; }
+footer .brand-logo { width: 58px; height: 58px; }
 .coffee-link { position: relative; overflow: hidden; isolation: isolate; }
 .nav-cta, .text-link { display: inline-block; padding: 11px 15px; border: 1px solid var(--cream); }
 .nav-cta { padding: 10px 14px; }
@@ -77,11 +86,12 @@ footer .brand-logo { width: 100px; height: 48px; }
   .process-card-large, .process-card-small { height: 100vw; margin-top: 0; }
   .menu-section { display: block; padding: 20vw 8vw; }
   .section-heading { position: static; margin-bottom: 40px; }
-  .menu-row { min-height: 105px; }
+  .menu-vibe { width: 180px; margin-top: 30px; }
+  .menu-row { grid-template-columns: 1fr; min-height: 105px; }
   .menu-name { padding-left: 18px; }
   .crew-intro { margin: 0 0 14vw auto; max-width: 75%; }
   .visit { min-height: 0; }
-  .map { min-height: 88vw; }
+  .map { min-height: 0; width: calc(100% - 16vw); margin: 8vw; }
   footer { grid-template-columns: 1fr 1fr; }
-  footer .footer-links, footer .footer-contact { flex-direction: column; gap: 10px; }
+  footer .footer-column { margin-top: 12px; }
 }

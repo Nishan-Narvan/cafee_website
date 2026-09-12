@@ -49,7 +49,7 @@ function App() {
     <main>
       <nav className="nav">
         <a className="brand-logo" href="#top" aria-label="The Brew Door home"><img src={media.logo} alt="The Brew Door" /></a>
-        <a className="nav-cta coffee-link" href="#visit">Come in</a>
+        <a className="nav-cta" href="#visit">Come in</a>
       </nav>
 
       <section className="hero" id="top">
@@ -59,7 +59,7 @@ function App() {
           <h1>The<br /><em>brew</em><br />door.</h1>
           <p className="eyebrow">Great coffee. Immaculate vibes.</p>
         </motion.div>
-        <motion.div className="hero-bottom" {...reveal}><a className="round-link coffee-link" href="#menu">Scroll the room</a></motion.div>
+        <motion.div className="hero-bottom" {...reveal}><a className="round-link scroll-button" href="#menu">See what’s brewing</a></motion.div>
       </section>
 
       <section className="manifesto">
@@ -74,7 +74,7 @@ function App() {
       </section>
 
       <section className="process-section">
-        <motion.div className="process-intro" {...reveal}><p className="eyebrow">Behind every good cup</p><h2>Made<br /><em>slowly.</em></h2><p>From the first pour to the final sip.</p></motion.div>
+        <motion.div className="process-intro" {...reveal}><p className="eyebrow">Behind every good cup</p><h2>Care in<br /><em>every pour.</em></h2><p>There is beauty in the in-between: the measured grind, the quiet pour, the first warm sip. Good coffee is a small ritual, made slowly enough to feel.</p></motion.div>
         <div className="process-grid">
           <motion.figure className="process-card process-card-large" {...reveal}><Media src={media.processSlow} alt="The Brew Door coffee-making process" type="video" /></motion.figure>
           <motion.figure className="process-card process-card-small" {...reveal} transition={{ ...reveal.transition, delay: .12 }}><Media src={media.processPour} alt="Iced latte being prepared at The Brew Door" type="video" /></motion.figure>
@@ -82,7 +82,7 @@ function App() {
       </section>
 
       <section className="menu-section">
-        <div className="section-heading"><div><p className="eyebrow">From behind the bar</p><h2>Good things<br /><em>inside.</em></h2></div></div>
+        <div className="section-heading"><div><p className="eyebrow">From behind the bar</p><h2>Good things<br /><em>inside.</em></h2><div className="menu-vibe"><Media src={media.peopleVibing} alt="People enjoying The Brew Door" type="video" /></div></div></div>
         <div className="menu-list">
           {menuItems.map((item, index) => (
             <motion.article className="menu-row" key={item.name} {...reveal} transition={{ ...reveal.transition, delay: index * 0.1 }}>
@@ -107,11 +107,11 @@ function App() {
       </section>
 
       <section className="visit" id="visit">
-        <div className="visit-copy"><p className="eyebrow">Find the door</p><h2>See you<br /><em>there.</em></h2><p>Good coffee is better in person.</p><a className="button button-light coffee-link" href={locationUrl} target="_blank" rel="noreferrer">Open maps</a></div>
+        <div className="visit-copy"><p className="eyebrow">Find the door</p><h2>See you<br /><em>there.</em></h2><p>Good coffee is better in person.</p><a className="button button-light loading-button" href={locationUrl} target="_blank" rel="noreferrer">See you there</a></div>
         <a className="map" href={locationUrl} target="_blank" rel="noreferrer" aria-label="Open The Brew Door location in Google Maps"><iframe title="The Brew Door location map" src="https://www.google.com/maps?q=The%20Brew%20Door&output=embed" loading="lazy" /><div className="map-shield"><img src={media.logo} alt="" /><span>Open maps</span></div></a>
       </section>
 
-      <footer><a className="brand-logo" href="#top"><img src={media.logo} alt="The Brew Door" /></a><div className="footer-links"><a href="#menu">Menu</a><a href="#crew">Crew</a><a href="#visit">Map</a></div><div className="footer-contact"><a href="https://www.instagram.com/" target="_blank" rel="noreferrer">Instagram</a><a href={locationUrl} target="_blank" rel="noreferrer">Find the door</a></div><small>© The Brew Door</small></footer>
+      <footer><a className="brand-logo" href="#top"><img src={media.logo} alt="The Brew Door" /></a><div className="footer-column"><h4>Menu</h4><a href="#menu">What’s brewing</a><a href="#menu">Our best</a></div><div className="footer-column"><h4>Location</h4><a href={locationUrl} target="_blank" rel="noreferrer">Find the door</a><a href="#visit">Open map</a></div><div className="footer-column"><h4>Instagram</h4><a href="https://www.instagram.com/" target="_blank" rel="noreferrer">@thebrewdoor</a><a href="#crew">Meet the crew</a></div><small>© The Brew Door</small></footer>
     </main>
   )
 }
