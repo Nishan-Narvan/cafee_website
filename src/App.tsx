@@ -68,11 +68,6 @@ function App() {
         <motion.p className="manifesto-copy" {...reveal}>Good coffee has a way of making the ordinary feel like a little more. Take your time. We’ll keep the door open.</motion.p>
       </section>
 
-      <section className="feature" id="menu">
-        <div className="feature-media"><Media src={media.montBlanc} alt="Mont Blanc coffee at The Brew Door" type="video" /></div>
-        <div className="feature-copy"><p className="eyebrow">Our best</p><h2>Mont<br /><em>Blanc.</em></h2><p>A signature sip from the door, made to be remembered.</p><a className="text-link coffee-link" href="#crew">Meet the crew</a></div>
-      </section>
-
       <section className="process-section">
         <motion.div className="process-intro" {...reveal}><p className="eyebrow">Behind every good cup</p><h2>Care in<br /><em>every pour.</em></h2><p>There is beauty in the in-between: the measured grind, the quiet pour, the first warm sip. Good coffee is a small ritual, made slowly enough to feel.</p></motion.div>
         <div className="process-grid">
@@ -81,8 +76,8 @@ function App() {
         </div>
       </section>
 
-      <section className="menu-section">
-        <div className="section-heading"><div><p className="eyebrow">From behind the bar</p><h2>Good things<br /><em>inside.</em></h2><div className="menu-vibe"><Media src={media.montBlanc} alt="Mont Blanc coffee at The Brew Door" type="video" /></div></div></div>
+      <section className="menu-section" id="menu">
+        <div className="section-heading"><div><p className="eyebrow">From behind the bar</p><h2>Good things<br /><em>inside.</em></h2></div></div>
         <div className="menu-list">
           {menuItems.map((item, index) => (
             <motion.article className="menu-row" key={item.name} {...reveal} transition={{ ...reveal.transition, delay: index * 0.1 }}>
@@ -92,22 +87,27 @@ function App() {
         </div>
       </section>
 
+      <section className="feature">
+        <div className="feature-media"><Media src={media.montBlanc} alt="Mont Blanc coffee at The Brew Door" type="video" /></div>
+        <div className="feature-copy"><p className="eyebrow">Our best</p><h2>Mont<br /><em>Blanc.</em></h2><p>A signature sip from the door, made to be remembered.</p><a className="text-link coffee-link" href="#crew">Meet the crew</a></div>
+      </section>
+
       <section className="crew section-rule" id="crew">
-        <div className="crew-heading"><p className="eyebrow">Introducing</p><h2>The crew’s<br /><em>energy.</em></h2><p>Zero chill about coffee,<br />endless chill about everything else.</p></div>
+        <motion.div className="crew-heading" {...reveal}><p className="eyebrow">Introducing</p><h2>The crew’s<br /><em>energy.</em></h2></motion.div>
         <div className="crew-gallery" id="crew-cards">
-          <article className="crew-card"><div className="crew-card-inner"><div className="crew-face"><Media src={media.wolf} alt="The Wolf crew illustration" /></div><div className="crew-person"><Media src={media.wolfPerson} alt="The Wolf crew member" /></div></div><h3>Wolf</h3></article>
-          <article className="crew-card"><div className="crew-card-inner"><div className="crew-face"><Media src={media.bear} alt="The Bear crew illustration" /></div><div className="crew-person"><Media src={media.bearPerson} alt="The Bear crew member" /></div></div><h3>Bear</h3></article>
-          <article className="crew-card"><div className="crew-card-inner"><div className="crew-face"><Media src={media.tiger} alt="The Tiger crew illustration" /></div><div className="crew-person"><Media src={media.tigerPerson} alt="The Tiger crew member" /></div></div><h3>Tiger</h3></article>
+          <motion.article className="crew-card" {...reveal}><div className="crew-card-inner"><div className="crew-face"><Media src={media.wolf} alt="The Wolf crew illustration" /></div><div className="crew-person"><Media src={media.wolfPerson} alt="The Wolf crew member" /></div></div><h3>Wolf</h3></motion.article>
+          <motion.article className="crew-card" {...reveal} transition={{ ...reveal.transition, delay: .1 }}><div className="crew-card-inner"><div className="crew-face"><Media src={media.bear} alt="The Bear crew illustration" /></div><div className="crew-person"><Media src={media.bearPerson} alt="The Bear crew member" /></div></div><h3>Bear</h3></motion.article>
+          <motion.article className="crew-card" {...reveal} transition={{ ...reveal.transition, delay: .2 }}><div className="crew-card-inner"><div className="crew-face"><Media src={media.tiger} alt="The Tiger crew illustration" /></div><div className="crew-person"><Media src={media.tigerPerson} alt="The Tiger crew member" /></div></div><h3>Tiger</h3></motion.article>
         </div>
       </section>
 
       <section className="people-section">
-        <div className="people-copy"><p className="eyebrow">The feeling after the first sip</p><h2>Loved by<br /><em>good people.</em></h2><p>Great coffee. Immaculate vibes.</p></div>
-        <div className="people-video"><Media src={media.peopleVibing} alt="People enjoying the atmosphere at The Brew Door" type="video" /><p>Good energy, on repeat.</p></div>
+      <motion.div className="people-copy" {...reveal}><p className="eyebrow">The feeling after the first sip</p><h2>Made for<br /><em>good moments.</em></h2><p>Great coffee. Immaculate vibes.</p></motion.div>
+      <motion.div className="people-video" {...reveal} transition={{ ...reveal.transition, delay: .12 }}><Media src={media.peopleVibing} alt="People enjoying the atmosphere at The Brew Door" type="video" /><p>Good energy, on repeat.</p></motion.div>
       </section>
 
       <section className="visit" id="visit">
-        <div className="visit-copy"><p className="eyebrow">Find the door</p><h2>See you<br /><em>there.</em></h2><p>Good coffee is better in person.</p><a className="button button-light loading-button" href={locationUrl} target="_blank" rel="noreferrer">See you there</a></div>
+        <div className="visit-copy"><p className="eyebrow">Find the door</p><h2>See you<br /><em>there.</em></h2><a className="button button-light loading-button" href={locationUrl} target="_blank" rel="noreferrer"><span>See you there</span><span className="button-arrow" aria-hidden="true">→</span></a></div>
         <a className="map" href={locationUrl} target="_blank" rel="noreferrer" aria-label="Open The Brew Door location in Google Maps"><iframe title="The Brew Door location map" src="https://www.google.com/maps?q=The%20Brew%20Door&output=embed" loading="lazy" /><div className="map-shield"><img src={media.logo} alt="" /><span>Open maps</span></div></a>
       </section>
 
