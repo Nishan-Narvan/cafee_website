@@ -82,7 +82,7 @@ function App() {
       </section>
 
       <section className="menu-section">
-        <div className="section-heading"><div><p className="eyebrow">From behind the bar</p><h2>Good things<br /><em>inside.</em></h2><div className="menu-vibe"><Media src={media.peopleVibing} alt="People enjoying The Brew Door" type="video" /></div></div></div>
+        <div className="section-heading"><div><p className="eyebrow">From behind the bar</p><h2>Good things<br /><em>inside.</em></h2><div className="menu-vibe"><Media src={media.montBlanc} alt="Mont Blanc coffee at The Brew Door" type="video" /></div></div></div>
         <div className="menu-list">
           {menuItems.map((item, index) => (
             <motion.article className="menu-row" key={item.name} {...reveal} transition={{ ...reveal.transition, delay: index * 0.1 }}>
