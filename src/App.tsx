@@ -1,4 +1,5 @@
-import { motion, useReducedMotion } from 'motion/react'
+import { useRef, useState, type PointerEvent } from 'react'
+import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from 'motion/react'
 
 const media = {
   logo: '/media/logo.jpg',
@@ -17,17 +18,67 @@ const media = {
   icedMocha: '/media/brew-door-13.mp4',
 }
 
-const locationUrl = 'https://l.instagram.com/?u=https%3A%2F%2Fmaps.app.goo.gl%2FR2wbMWMEQzP4GgTQ6%3Fg_st%3Dic%26utm_source%3Dig%26utm_medium%3Dsocial%26utm_content%3Dlink_in_bio%26fbclid%3DPAcGRvZgJleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA85MzY2MTk3NDMzOTI0NTkAAafK-d8FswoVE-mb2cFdLEnfXHw8bCHeoz2_jlnuxwD1yaWb3ZwW3WRkXfDqMw_aem_yuxLHAHSv6-sN5uzkWs0uw&e=AUAvWlLf7M0muz5r5NzPHulXRDhfwhKU0L_7pSpqf_w9Vd6aMB3CndAHezB3CcMPClgt5ENyXtx_QYDTpZYooR77BkjUIbhFS3mroRj8IsxLLR6iVa_xYz8FKTBuDM0TgXwb4m8'
+const locationUrl = 'https://maps.app.goo.gl/ntxJLATtQRqstnyU7'
 
-const menuItems = [
-  { name: 'Espresso', detail: 'Short, rich, and intensely aromatic.' },
-  { name: 'Cappuccino', detail: 'Velvety milk, soft foam, and a deep finish.' },
-  { name: 'Latte', detail: 'Smooth espresso with beautifully steamed milk.' },
-  { name: 'Americano', detail: 'Espresso lengthened with hot water, clean and bright.' },
-  { name: 'Mont Blanc', detail: 'A signature coffee with a little theatre.' },
-  { name: 'House Toast', detail: 'Golden sourdough, seasonal toppings.' },
-  { name: 'Something Sweet', detail: 'A small finish for a very good day.' },
+type MenuItem = { name: string; detail?: string; price?: string; prices?: string[] }
+type MenuCategory = { name: string; note?: string; groups?: { name: string; items: MenuItem[] }[]; items?: MenuItem[] }
+
+const menuCategories: MenuCategory[] = [
+  { name: 'Sandos', groups: [
+    { name: 'Veg', items: [
+      { name: 'The Mezze Melt', detail: 'Falafel, hummus, roasted zucchini, peppers, pickled veggies and paprika on toasted sourdough.', price: '₹299/-' },
+      { name: 'The Rustic Forager', detail: 'Peri-peri oyster mushrooms, sriracha mayo and creamy ranch on pillowy milk bread.', price: '₹309/-' },
+      { name: 'The Classic Caprese', detail: 'Bocconcini, marinated tomatoes, pesto and balsamic drizzle on toasted sourdough.', price: '₹329/-' },
+      { name: 'The 420', detail: 'BBQ cottage cheese, lettuce, ranch, pickled onions and jalapeños on soft milk bread.', price: '₹329/-' },
+      { name: 'Thecha Riot 🌶️🌶️🌶️', detail: 'Fiery thecha cream, mozzarella and cheddar in soft toasted milk bread.', price: '₹349/-' },
+    ] },
+    { name: 'Non-Veg', items: [
+      { name: 'Crispy Caesar', detail: 'Crispy fried chicken, mustard-infused Caesar dressing and crunchy lettuce on milk bread.', price: '₹319/-' },
+      { name: 'Pepper on the Bright Side', detail: 'Lemon-pepper grilled chicken, cucumber-onion salad and ranch on toasted sourdough.', price: '₹349/-' },
+      { name: 'Southern Flame', detail: 'Nashville fried chicken, ranch, cucumber pickles and jalapeños on milk bread.', price: '₹359/-' },
+      { name: 'Fiery Thecha 🌶️🌶️🌶️', detail: 'Grilled chicken, fiery thecha cream, mozzarella and cheddar on toasted sourdough.', price: '₹369/-' },
+      { name: 'Seoul Crust', detail: 'Korean fried chicken, sriracha mayo, jalapeños and ranch on soft milk bread.', price: '₹399/-' },
+    ] },
+  ] },
+  { name: 'Side Bites', groups: [
+    { name: 'Veg', items: [{ name: 'Peri Peri Sweet Potato Chips', price: '₹199/-' }, { name: 'Creamy Mushroom Green Chilli Crostinis', price: '₹199/-' }, { name: 'Jalapeño & Red Paprika Poppers', price: '₹249/-' }] },
+    { name: 'Non-Veg', items: [{ name: 'Creamy Chicken - Green Chilli Crostinis', price: '₹229/-' }, { name: 'Chicken Popcorn - Peri Peri', price: '₹259/-' }, { name: 'Truffle Parmesan', price: '₹299/-' }, { name: 'Chicken Yakitori', price: '₹299/-' }] },
+    { name: 'Dips', items: [{ name: 'Chilli Parsley Dip', price: '₹49/-' }, { name: 'Cheesy Dip', price: '₹49/-' }] },
+  ] },
+  { name: 'Baos', note: 'Soft, pillowy bao loaded with your choice of mushroom or chicken.', items: [
+    { name: 'Honey Glazed', detail: 'Tossed in a sticky honey glaze.', prices: ['₹309/-', '₹359/-'] },
+    { name: 'Chilli Basil', detail: 'Mushroom or chicken in a punchy chilli-basil sauce.', prices: ['₹329/-', '₹369/-'] },
+  ] },
+  { name: 'Open Toasts', items: [
+    { name: 'Holy Guac', detail: 'Creamy guac, tangy salsa, feta, basil and cherry tomato.', price: '₹249/-' },
+    { name: 'Toast Malone', detail: 'Guacamole, cheesy avocado cream, pickled cucumber, carrots and red paprika.', price: '₹259/-' },
+    { name: 'Pesto Manifesto', detail: 'Pesto, earthy mushrooms, caramelised onions and fresh microgreens.', price: '₹269/-' },
+    { name: 'Add-on: Scrambled Eggs', detail: 'Price to confirm.', price: '₹50/-' },
+  ] },
+  { name: 'Desserts', items: [{ name: 'TBD Classic Cookie', price: '₹109/-' }, { name: 'Butter Chocolate Chip Cake', price: '₹159/-' }, { name: 'Tiramisu', price: '₹209/-' }, { name: 'Classic Affogato', price: '₹219/-' }, { name: 'Nutella Hazelnut Affogato', price: '₹259/-' }] },
+  { name: 'Classics', note: 'Hot coffee and cold coffee favourites. Spanish Latte (Iced) pricing should be confirmed.', groups: [
+    { name: 'Hot', items: [{ name: 'Espresso', price: '₹159/-' }, { name: 'Macchiato', price: '₹149/-' }, { name: 'Americano', price: '₹159/-' }, { name: 'Cortado', price: '₹169/-' }, { name: 'Latte', price: '₹209/-' }, { name: 'Cappuccino', price: '₹189/-' }, { name: 'Flat White', price: '₹219/-' }, { name: 'Mocha', price: '₹189/-' }, { name: 'Hot Chocolate', price: '₹209/-' }, { name: 'Spanish Latte', price: '₹209/-' }] },
+    { name: 'Cold', items: [{ name: 'Iced Espresso', prices: ['₹149/-', '—'] }, { name: 'Long Black', prices: ['₹159/-', '₹209/-'] }, { name: 'Iced Cappuccino', prices: ['₹199/-', '₹249/-'] }, { name: 'Sunrise Americano', prices: ['₹199/-', '₹249/-'] }, { name: 'Iced Latte', prices: ['₹209/-', '₹259/-'] }, { name: 'Iced Mocha', prices: ['₹219/-', '₹259/-'] }, { name: 'Iced Chocolate', prices: ['₹219/-', '—'] }, { name: 'Espresso Tonic', prices: ['₹239/-', '₹289/-'] }, { name: 'Cold Coffee', prices: ['₹239/-', '₹289/-'] }, { name: 'Spanish Latte (Iced)', prices: ['₹259/-', '₹289/-'] }] },
+    { name: 'Add-ons', items: [{ name: 'Whipped Cream', price: '₹55/-' }, { name: 'Hazelnut', price: '₹65/-' }, { name: 'Vanilla', price: '₹65/-' }, { name: 'Caramel', price: '₹65/-' }, { name: 'Espresso Shot', price: '₹65/-' }] },
+    { name: 'Milk Options', items: [{ name: 'Almond', price: '₹89/-' }, { name: 'Oats', price: '₹89/-' }, { name: 'Lactose Free', price: '₹89/-' }] },
+  ] },
+  { name: 'TBD Signatures', items: [
+    { name: 'New York Latte', detail: 'Brown butter concoction paired with double-shot espresso.', price: '₹289/-' },
+    { name: 'Fridge Cigg', detail: 'Diet Coke spiked with espresso and light vanilla cold foam.', price: '₹299/-' },
+    { name: 'Caramel Silk', detail: 'Cold brew layered with caramel-vanilla cloud foam.', price: '₹309/-' },
+    { name: 'The Mont Blanc', detail: 'Slow-steeped cold brew with vanilla cold foam and fresh orange.', price: '₹319/-' },
+    { name: 'Coconut Cloud Espresso', detail: 'Espresso balanced on fresh coconut water.', price: '₹319/-' },
+  ] },
+  { name: 'Matcha', items: [{ name: 'Matcha Latte', price: '₹269/-' }, { name: 'Matcha Latte (Iced)', price: '₹279/-' }, { name: 'Strawberry Matcha', price: '₹309/-' }, { name: 'Coconut Cloud Matcha', price: '₹339/-' }] },
+  { name: 'Manual Brews', items: [{ name: 'French Press', price: '₹209/-' }, { name: 'AeroPress', price: '₹209/-' }, { name: 'Pourover', price: '₹209/-' }, { name: 'Cold Brew', price: '₹199/-' }, { name: 'Iced Pourover', price: '₹219/-' }, { name: 'Vietnamese Style Brew', price: '₹239/-' }] },
+  { name: 'Mocktails', items: [{ name: 'Ocean Escape', detail: 'Curaçao, fresh lime and light sweetness for a mint escape.', price: '₹199/-' }, { name: 'Elderberry Bloom', detail: 'Tart raspberry and floral elderflower.', price: '₹199/-' }, { name: 'Jamun Jolt', detail: 'A tangy, chatpata jamun mocktail.', price: '₹199/-' }, { name: 'Mother Mary', detail: 'Virgin mojito with mint and basil.', price: '₹199/-' }, { name: 'Mango Tango', detail: 'Mango and mint blended together.', price: '₹199/-' }, { name: 'Summer Strike', detail: 'Watermelon and cool mint.', price: '₹229/-' }] },
+  { name: 'Shakes', items: [{ name: 'French Vanilla', price: '₹199/-' }, { name: 'Salted Caramel', price: '₹219/-' }, { name: 'Cookies & Cream', price: '₹269/-' }, { name: 'Lotus Biscoff', price: '₹279/-' }, { name: 'Nutella Hazelnut', price: '₹299/-' }] },
+  { name: 'Smoothies', items: [{ name: 'Captain Peanut', detail: 'Peanut butter, oats, banana and cinnamon.', price: '₹309/-' }, { name: 'Coco de pina', detail: 'Banana, pineapple, coconut and honey.', price: '₹319/-' }, { name: 'Silk Route', detail: 'Avocado and agave smoothie.', price: '₹349/-' }, { name: 'Blueberry Cheesecake', detail: 'A berry dessert-inspired smoothie.', price: '₹399/-' }] },
+  { name: 'Teas', groups: [{ name: 'Hot', items: [{ name: 'Black Tea', price: '₹109/-' }, { name: 'Blue Pea Tea', price: '₹149/-' }, { name: 'Hibiscus Tea', price: '₹149/-' }] }, { name: 'Iced', items: [{ name: 'Lemon Iced Tea', price: '₹159/-' }, { name: 'Peach Iced Tea', price: '₹179/-' }, { name: 'Hibiscus Iced Tea', price: '₹179/-' }, { name: 'Blue Pea Iced Tea', price: '₹189/-' }] }] },
 ]
+
+const menuCategoryOrder = ['TBD Signatures', 'Sandos', 'Baos', 'Open Toasts', 'Side Bites', 'Desserts', 'Classics', 'Manual Brews', 'Matcha', 'Teas', 'Mocktails', 'Shakes', 'Smoothies']
+const orderedMenuCategories = menuCategoryOrder.map((name) => menuCategories.find((category) => category.name === name)).filter((category): category is MenuCategory => Boolean(category))
 
 function Media({ src, alt, type = 'image', className = '' }: { src: string; alt: string; type?: string; className?: string }) {
   if (type === 'video') {
@@ -36,8 +87,40 @@ function Media({ src, alt, type = 'image', className = '' }: { src: string; alt:
   return <img className={className} src={src} alt={alt} loading="lazy" />
 }
 
+function MenuPage({ src, alt, label, number, delay = 0 }: { src: string; alt: string; label: string; number: string; delay?: number }) {
+  const reducedMotion = useReducedMotion()
+  const pageRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({ target: pageRef, offset: ['start end', 'end start'] })
+  const imageY = useTransform(scrollYProgress, [0, 1], reducedMotion ? [0, 0] : [-16, 16])
+  const pointerX = useMotionValue(0)
+  const pointerY = useMotionValue(0)
+  const rotateX = useSpring(useTransform(pointerY, [-0.5, 0.5], [4, -4]), { stiffness: 180, damping: 22 })
+  const rotateY = useSpring(useTransform(pointerX, [-0.5, 0.5], [-4, 4]), { stiffness: 180, damping: 22 })
+
+  const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    if (reducedMotion || !pageRef.current) return
+    const bounds = pageRef.current.getBoundingClientRect()
+    pointerX.set((event.clientX - bounds.left) / bounds.width - 0.5)
+    pointerY.set((event.clientY - bounds.top) / bounds.height - 0.5)
+  }
+
+  const resetPointer = () => {
+    pointerX.set(0)
+    pointerY.set(0)
+  }
+
+  return (
+    <motion.div ref={pageRef} className="menu-page" style={{ rotateX, rotateY }} onPointerMove={handlePointerMove} onPointerLeave={resetPointer} initial={{ opacity: 0, transform: reducedMotion ? 'none' : 'translateY(28px) scale(.97)' }} whileInView={{ opacity: 1, transform: 'translateY(0) scale(1)' }} viewport={{ once: true, margin: '-12% 0px' }} transition={{ duration: .95, delay, ease: [0.23, 1, 0.32, 1] }}>
+      <div className="menu-page-label"><span>{number}</span><span>{label}</span></div>
+      <div className="menu-page-frame"><motion.img style={{ y: imageY }} src={src} alt={alt} loading="lazy" /></div>
+    </motion.div>
+  )
+}
+
 function App() {
   const reduceMotion = useReducedMotion()
+  const [selectedCategory, setSelectedCategory] = useState(menuCategoryOrder[0])
+  const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
   const easing = [0.23, 1, 0.32, 1] as const
 
   const reveal = {
@@ -66,6 +149,9 @@ function App() {
     animate: { opacity: 1, transform: 'translateY(0)' },
     transition: { duration: reduceMotion ? 0.01 : 1.4, delay: reduceMotion ? 0 : 1, ease: easing },
   }
+
+  const activeCategory = orderedMenuCategories.find((category) => category.name === selectedCategory)
+  const activeGroups = activeCategory?.groups ?? []
 
   return (
     <main>
@@ -99,14 +185,30 @@ function App() {
       </section>
 
       <section className="menu-section" id="menu">
-        <div className="section-heading"><div><p className="eyebrow">From behind the bar</p><h2>Good things<br /><em>inside.</em></h2></div></div>
+        <div className="section-heading"><div><p className="eyebrow">From behind the bar</p><h2>Good things<br /><em>inside.</em></h2></div><div className="menu-nav-panel"><nav className="menu-filters" aria-label="Menu categories">{orderedMenuCategories.map((category) => <button className={selectedCategory === category.name ? 'is-active' : ''} type="button" key={category.name} onClick={() => { setSelectedCategory(category.name); setSelectedGroup(category.groups?.[0]?.name ?? null) }}>{category.name}</button>)}</nav>{activeGroups.length > 0 && <nav className="menu-subfilters" aria-label={`${selectedCategory} subcategories`}>{activeGroups.map((group) => <button className={selectedGroup === group.name ? 'is-active' : ''} type="button" key={group.name} onClick={() => setSelectedGroup(group.name)}>{group.name}</button>)}</nav>}</div></div>
         <div className="menu-list">
-          {menuItems.map((item, index) => (
-            <motion.article className="menu-row" key={item.name} {...reveal} transition={{ ...reveal.transition, delay: index * 0.1 }}>
-            <div className="menu-name"><h3>{item.name}</h3><p>{item.detail}</p></div>
-            </motion.article>
+          {orderedMenuCategories.filter((category) => category.name === selectedCategory).map((category, categoryIndex) => (
+            <div className="menu-category" key={category.name}>
+              <div className="menu-category-heading"><h3>{category.name}</h3>{category.note && <p>{category.note}</p>}</div>
+              {(category.groups ?? [{ name: '', items: category.items ?? [] }]).filter((group) => !selectedGroup || group.name === selectedGroup).map((group) => (
+                <div className="menu-group" key={`${category.name}-${group.name}`}>
+                  {group.name && <h4>{group.name}</h4>}
+                  {group.items.map((item, itemIndex) => (
+                    <motion.article className="menu-row" key={`${category.name}-${group.name}-${item.name}`} {...reveal} transition={{ ...reveal.transition, delay: (categoryIndex + itemIndex) * 0.04 }}>
+                      <div className="menu-name"><h3>{item.name}</h3>{item.detail && <p>{item.detail}</p>}</div>
+                      <div className="menu-price">{item.prices ? item.prices.map((price) => <span key={price}>{price}</span>) : item.price}</div>
+                    </motion.article>
+                  ))}
+                </div>
+              ))}
+            </div>
           ))}
         </div>
+      </section>
+
+      <section className="menu-pages" aria-label="Full cafe menu">
+        <MenuPage number="01" label="Food" src="/media/first-part-menu.webp" alt="The Brew Door food menu including sandos, sides, baos, open toasts, and desserts" />
+        <MenuPage number="02" label="Drinks" src="/media/second-part-menu.webp" alt="The Brew Door drinks menu including coffee, mocktails, signatures, shakes, teas, and smoothies" delay={.12} />
       </section>
 
       <section className="feature">
