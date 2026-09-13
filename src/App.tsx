@@ -117,6 +117,24 @@ function MenuPage({ src, alt, label, number, delay = 0 }: { src: string; alt: st
   )
 }
 
+function MenuCategoryNav({ categories, selectedCategory, onSelect }: { categories: MenuCategory[]; selectedCategory: string; onSelect: (category: MenuCategory) => void }) {
+  const navRef = useRef<HTMLElement>(null)
+
+  const scrollCategories = (direction: number) => {
+    navRef.current?.scrollBy({ left: direction * 180, behavior: 'smooth' })
+  }
+
+  return (
+    <div className="menu-category-nav">
+      <button className="menu-nav-arrow" type="button" aria-label="Show previous menu categories" onClick={() => scrollCategories(-1)}>←</button>
+      <nav ref={navRef} className="menu-filters" aria-label="Menu categories">
+        {categories.map((category) => <button className={selectedCategory === category.name ? 'is-active' : ''} type="button" key={category.name} onClick={() => onSelect(category)}>{category.name}</button>)}
+      </nav>
+      <button className="menu-nav-arrow" type="button" aria-label="Show more menu categories" onClick={() => scrollCategories(1)}>→</button>
+    </div>
+  )
+}
+
 function App() {
   const reduceMotion = useReducedMotion()
   const [selectedCategory, setSelectedCategory] = useState(menuCategoryOrder[0])
@@ -185,8 +203,13 @@ function App() {
       </section>
 
       <section className="menu-section" id="menu">
-        <div className="section-heading"><div><p className="eyebrow">From behind the bar</p><h2>Good things<br /><em>inside.</em></h2></div><div className="menu-nav-panel"><nav className="menu-filters" aria-label="Menu categories">{orderedMenuCategories.map((category) => <button className={selectedCategory === category.name ? 'is-active' : ''} type="button" key={category.name} onClick={() => { setSelectedCategory(category.name); setSelectedGroup(category.groups?.[0]?.name ?? null) }}>{category.name}</button>)}</nav>{activeGroups.length > 0 && <nav className="menu-subfilters" aria-label={`${selectedCategory} subcategories`}>{activeGroups.map((group) => <button className={selectedGroup === group.name ? 'is-active' : ''} type="button" key={group.name} onClick={() => setSelectedGroup(group.name)}>{group.name}</button>)}</nav>}</div></div>
-        <div className="menu-list">
+        <div className="section-heading"><p className="eyebrow">From behind the bar</p><h2>Good things<br /><em>inside.</em></h2></div>
+        <div className="menu-content">
+          <div className="menu-nav-panel">
+            <MenuCategoryNav categories={orderedMenuCategories} selectedCategory={selectedCategory} onSelect={(category) => { setSelectedCategory(category.name); setSelectedGroup(category.groups?.[0]?.name ?? null) }} />
+            {activeGroups.length > 0 && <nav className="menu-subfilters" aria-label={`${selectedCategory} subcategories`}>{activeGroups.map((group) => <button className={selectedGroup === group.name ? 'is-active' : ''} type="button" key={group.name} onClick={() => setSelectedGroup(group.name)}>{group.name}</button>)}</nav>}
+          </div>
+          <div className="menu-list">
           {orderedMenuCategories.filter((category) => category.name === selectedCategory).map((category, categoryIndex) => (
             <div className="menu-category" key={category.name}>
               <div className="menu-category-heading"><h3>{category.name}</h3>{category.note && <p>{category.note}</p>}</div>
@@ -203,12 +226,13 @@ function App() {
               ))}
             </div>
           ))}
+          </div>
         </div>
       </section>
 
       <section className="menu-pages" aria-label="Full cafe menu">
         <MenuPage number="01" label="Food" src="/media/first-part-menu.webp" alt="The Brew Door food menu including sandos, sides, baos, open toasts, and desserts" />
-        <MenuPage number="02" label="Drinks" src="/media/second-part-menu.webp" alt="The Brew Door drinks menu including coffee, mocktails, signatures, shakes, teas, and smoothies" delay={.12} />
+        <MenuPage number="02" label="Drinks" src="/media/second-part-menu.jpg" alt="The Brew Door drinks menu including coffee, mocktails, signatures, shakes, teas, and smoothies" delay={.12} />
       </section>
 
       <section className="feature">
